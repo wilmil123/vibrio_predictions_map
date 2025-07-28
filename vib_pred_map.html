@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="robots" content="noindex">
+		<title>Vibrio Predicitons Map</title>
+<style type="text/css">
+body {
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background-color: white;
+  font-family: sans-serif;
+}
+.title {
+  display: grid;
+  align-items: center;
+  grid-row: 1;
+}
+.title #display-title {
+  grid-column: 1;
+  margin-bottom: 5px;
+}
+.title #infobtn {
+  grid-column: 2;
+  margin-bottom: 5px;
+}
+.modelerror {
+  grid-row: 2;
+}
+.modelerror #modelerrortext {
+  margin: 2px;
+}
+.slide-holder {
+  margin: auto;
+  grid-row: 3;
+}
+.wrap {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  border-radius: 5px;
+}
+.btn {
+  align-items: center;
+  background-color: rgba(240, 240, 240, 0.26);
+  border: 1px solid #DFDFDF;
+  border-radius: 16px;
+  box-sizing: border-box;
+  color: #000000;
+  cursor: pointer;
+  display: flex;
+  font-family: sans-serif;
+  font-size: 14px;
+  justify-content: center;
+  line-height: 30px;
+  padding: 7px 11px;
+  text-decoration: none;
+}
+.wrap .btn {
+  width: 50%;
+}
+.btn:active,
+.btn:hover,
+.btn:disabled {
+  background-color: rgba(200, 200, 200, 0.26);
+  color: #333333;
+}
+.modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.modal-content {
+  position: relative;
+  top: -25%;
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 5px;
+  width: 75%;
+  text-align: left;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: #ccc;
+  text-decoration: none;
+  cursor: pointer;
+}
+#radio-wrap {
+  border: solid 2px white;
+}
+#slide {
+  border-radius: 5px;
+  max-width: 60vw;
+  max-height: 70vh;
+}
+#display-title {
+  font-size: 20pt;
+}
+#infobtntext {
+  font-size: 12pt;
+  font-weight: bold;
+}
+.transition {
+  -webkit-animation: transition 0.5s ease-in-out;
+  animation: transition 0.5s ease-in-out;
+}
+@-webkit-keyframes transition {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes transition {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+button:hover {
+  cursor: pointer;
+}
+</style>
+	</head>
+	<body>
+	<!-- modal -->
+  <div id="infoModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Vp Prediction Tool Information</h3>
+      <p><b>These predictions are purely theoretical. Predictions of Vp outbreaks made by this tool are not guaranteed to happen in reality. The authors do not assume responsibility for any predictive errors made by this tool.</b></p>
+      <hr>
+      <h4>What is Vp?</h4>
+      <p>Vp, or <i>Vibrio parahaemolyticus</i>, is a marine bacterium that can cause foodborne illness from raw or undercooked seafood. It is not harmful to oysters, but can be a public health concern.<br><a href="https://inspection.canada.ca/en/preventive-controls/fish/vibrio-parahaemolyticus">Learn more from Health Canada</a> &middot; <a href="https://www.ecablab.com/lab-news/atlantic-oysters-in-a-warming-world">Learn more about modelling work on Vp done in the ECAB Lab</a> &middot; <a href="https://www.ecablab.com/lab-news/managing-a-current-threat-to-the-oyster-industry">Learn more about current Vp policies</a>.</p>
+      <hr>
+      <h4>Should I be worried?</h4>
+      <p><b>Probably not.</b> Vp infection from the Gulf of St. Lawrence is <a href="https://www.canada.ca/en/public-health/services/publications/food-nutrition/national-enteric-surveillance-program-annual-summary-2022.html#t2">very rare</a>. However, Vp can be a financial concern for oyster growers, so it is important to understand when and where outbreaks might occur in the Gulf of St. Lawrence.</p>
+      <hr>
+      <h4>What is a Vp outbreak?</h4>
+      <p>A Vp 'outbreak' is considered as any bacteriological test returning a Vp abundance <b>above 100</b> colony-forming units per millilitre (CFU/mL) or most probable number per gram (MPN/g) of oyster meat.<br><a href="https://inspection.canada.ca/en/food-safety-industry/food-safety-standards-guidelines/bacteriological-guidelines">Learn more about Canadian Food Inspection Agency guidelines</a>.</p>
+      <hr>
+      <h4>How are the predictions made?</h4>
+      <p>Vp outbreak risk predictions are made using random forest (RF) models built on Canadian Food Inspection Agency archival test data from 2017-2023 and associations with water temperature and salinity. These RF models have out-of-bag error rates between 11% and 14%, increasing as predictions are made further into the future. The predictions shown here are made using environmental data from the <a href="https://marine.copernicus.eu/">Copernicus Marine Service</a>.<br>For more information, see this honours thesis.</p>
+      <hr>
+      <h4>Credits</h4>
+      <p>W. Chapman, <a href="https://www.ecablab.com/">ECAB Lab @ MtA</a></p>
+    </div>
+  </div>
+	  <div class="title">
+	    <p id="display-title"></p>
+	    <button id="infobtn" class="btn"><p id="infobtntext">What am I looking at?</p></button>
+	  </div>
+	  <div class="modelerror">
+	    <p id="modelerrortext"></p>
+	  </div>
+	  <div class="slide-holder">
+      <img src="" id="slide">
+      <div class="wrap">
+        <button id="btn1" class="btn"><h1 id="prevbtn"></h1></button>
+        <button id="btn2" class="btn"><h1 id="nextbtn"></h1></button>
+      </div>
+    </div>
+
+<script>
+// today's date
+let currentDate = new Date();
+
+var currentDateStr = currentDate.toLocaleDateString('en-CA', {timeZone: "America/New_York"});
+console.log(currentDateStr);
+
+function createDateStrings (currentDate) {
+var dateStrs = [];
+ for (let dateStr = 0; dateStr < 7; dateStr++) {
+  let offsetDate = new Date(currentDate);
+  offsetDate.setDate(offsetDate.getDate() + dateStr);
+  let offsetDateStr = offsetDate.toLocaleDateString('en-CA', {timeZone: "America/New_York"});
+  console.log(offsetDate);
+  dateStrs.push(offsetDateStr);
+ }
+ return dateStrs;
+}
+
+var offsetDateStrs = createDateStrings(currentDate);
+
+const filepath = "file:///home/wmchapman/Documents/school/ecab/2025/vibrio_predictions_map/raster_predictions/";
+
+const titleHeaderStatic = "Vp in Gulf of St. Lawrence oysters<br>Outbreak prediction (% chance) for ";
+const modelErrStatic = "-day model out-of-bag classification error: ";
+const prevBtnStatic = "Previous Date";
+const nextBtnStatic = "Next Date";
+
+		//array of photos
+const photos = [
+        filepath + "predprob_gen" + currentDateStr + "_for" + offsetDateStrs[0] + ".png",
+        filepath + "predprob_gen" + currentDateStr + "_for" + offsetDateStrs[1] + ".png",
+        filepath + "predprob_gen" + currentDateStr + "_for" + offsetDateStrs[2] + ".png",
+        filepath + "predprob_gen" + currentDateStr + "_for" + offsetDateStrs[3] + ".png",
+        filepath + "predprob_gen" + currentDateStr + "_for" + offsetDateStrs[4] + ".png",
+        filepath + "predprob_gen" + currentDateStr + "_for" + offsetDateStrs[5] + ".png",
+        filepath + "predprob_gen" + currentDateStr + "_for" + offsetDateStrs[6] + ".png"
+				];
+				
+const modelErrors = [
+  "13.71%",
+  "11.47%",
+  "11.47%",
+  "13.71%",
+  "13.71%",
+  "13.71%",
+  "13.71%"
+];
+
+let slide = document.getElementById("slide");
+const btn1 = document.getElementById("btn1");
+const btn2 = document.getElementById("btn2");
+
+//set current index
+let i = 0;
+updateDynamicElements(i);
+
+function updateDynamicElements (currentIndex) {
+  //set slide src to current index
+  slide.src = photos[currentIndex];
+  // set title & buttons to current index
+  document.getElementById("display-title").innerHTML = titleHeaderStatic + "<b>" + offsetDateStrs[currentIndex] + "</b>";
+  document.getElementById("modelerrortext").innerHTML = (currentIndex + 1) + modelErrStatic + "<b>" + modelErrors[currentIndex] + "</b>";
+  if ((currentIndex - 1) < 0) {
+    btn1.disabled = true;
+    document.getElementById("prevbtn").innerHTML = "";
+  } else {
+    btn1.disabled = false;
+    document.getElementById("prevbtn").innerHTML = prevBtnStatic + "<br>" + offsetDateStrs[currentIndex - 1];
+  }
+  if ((currentIndex + 1) > (photos.length - 1)) {
+    btn2.disabled = true;
+    document.getElementById("nextbtn").innerHTML = "";
+  } else {
+    btn2.disabled = false;
+    document.getElementById("nextbtn").innerHTML = nextBtnStatic + "<br>" + offsetDateStrs[currentIndex + 1];
+  }
+}
+
+btn2.onclick = () => {
+  //when btn2 is clicked
+  i++;
+  //add 1 to current index
+  updateDynamicElements(i);
+};
+
+btn1.onclick = () => {
+  //when btn1 is clicked
+  i--;
+  //minus 1 from current index
+  updateDynamicElements(i);
+};
+
+btn1.addEventListener("click", () => {
+  slide.classList.add("transition");
+});
+//when btn1 is clicked add transition class to slide
+btn1.addEventListener("mouseup", () => {
+  slide.classList.remove("transition");
+});
+//when btn1 is clicked remove transition class from slide
+btn2.addEventListener("click", () => {
+  slide.classList.add("transition");
+});
+//when btn2 is clicked add transition class to slide
+btn2.addEventListener("mouseup", () => {
+  slide.classList.remove("transition");
+});
+//when btn2 is clicked remove transition class from slide
+
+var modal = document.getElementById("infoModal");
+var infoBtn = document.getElementById("infobtn");
+var span = document.getElementsByClassName("close")[0];
+
+infoBtn.onclick = function() {
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+window.onload = function () {
+  document.getElementById("infobtn").click();
+};
+		</script>
+</html>
