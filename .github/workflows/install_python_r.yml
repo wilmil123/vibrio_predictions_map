@@ -1,6 +1,6 @@
 # .github/workflows/install_python_r.yml
 
-name: Run Vp Predictions
+name: Install python and R
 
 on:
   workflow_dispatch:
