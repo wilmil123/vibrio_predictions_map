@@ -11,18 +11,5 @@ jobs:
   run-vp-preds:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.11
-        run: sudo apt-get install python3
-      - name: Create and start virtual environment
-        run: |
-          python -m venv vib_pred_map
-          source vib_pred_map/bin/activate
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install copernicusmarine
-      - name: Install R
-        uses: r-lib/actions/setup-r@v2
       - name: Run run.sh
         run: sh ./run.sh
