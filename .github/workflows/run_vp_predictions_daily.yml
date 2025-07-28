@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up Python 3.11
+        run: sudo apt-get install python3
       - name: Create and start virtual environment
         run: |
           python -m venv vib_pred_map
@@ -20,5 +22,21 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install copernicusmarine
+      - name: Install R
+        uses: r-lib/actions/setup-r@v2
+      - name: Install packages
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::argparser 
+            any::randomForest
+            any::terra
+            any::lubridate
+            any::dplyr
+            any::ggplot2
+            any::colorspace
+            any::rnaturalearth
+            any::rnaturalearthdata
+            any::sf
       - name: Run run.sh
         run: sh ./run.sh
