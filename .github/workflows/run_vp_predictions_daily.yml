@@ -24,6 +24,5 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install copernicusmarine
-          ln -s /usr/lib/python3/dist-packages/copernicusmarine $pythonLocation/lib/python3.11/
       - name: Run run.sh
         run: sh ./run.sh
