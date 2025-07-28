@@ -12,5 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Create and start virtual environment
+        run: |
+          python -m venv vib_pred_map
+          source vib_pred_map/bin/activate
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install copernicusmarine
       - name: Run run.sh
         run: sh ./run.sh
