@@ -11,5 +11,6 @@ jobs:
   run-vp-preds:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Run run.sh
         run: sh ./run.sh
