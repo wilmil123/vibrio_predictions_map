@@ -39,4 +39,10 @@ jobs:
             any::rnaturalearthdata
             any::sf
       - name: Run run.sh
-        run: sh ./run.sh
+        run: |
+          sh ./run.sh
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "crongenerated"
+          git push
