@@ -11,4 +11,4 @@ jobs:
   run-vp-preds:
     runs-on: ubuntu-latest
     steps:
-      - run: sh /vibrio_predictions_map/run.sh
+      - run: sh https://github.com/wilmil123/vibrio_predictions_map/run.sh
