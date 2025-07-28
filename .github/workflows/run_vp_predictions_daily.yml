@@ -43,7 +43,7 @@ jobs:
           USERNAME: ${{ secrets.COPERN_USER }}
           PASSWORD: ${{ secrets.COPERN_PWD }}
         run: sh ./run.sh
-      - name Push crongenerated changes
+      - name: Push crongenerated changes
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
