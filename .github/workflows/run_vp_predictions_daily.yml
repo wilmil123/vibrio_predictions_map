@@ -1,0 +1,15 @@
+# .github/workflows/run_vp_predictions_daily.yml
+
+name: Run Vp Predictions
+
+on:
+  schedule:
+    - cron "*/5 * * * *"
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Updates Vp prediction images
+      run: sh run.sh
