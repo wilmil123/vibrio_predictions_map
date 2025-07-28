@@ -1,9 +1,9 @@
 #!bin/bash
 
-HOME_DIR=~/Documents/school/ecab/2025/vibrio_predictions_map
-PY_OUT_DIR=~/Documents/school/ecab/2025/vibrio_predictions_map/env_params
-RF_MODELS_DIR=~/Documents/school/ecab/2025/vibrio_predictions_map/rf_models
-R_OUT_DIR=~/Documents/school/ecab/2025/vibrio_predictions_map/raster_predictions
+HOME_DIR=/vibrio_predictions_map/
+PY_OUT_DIR=/vibrio_predictions_map/env_params
+RF_MODELS_DIR=/vibrio_predictions_map/rf_models
+R_OUT_DIR=/vibrio_predictions_map/raster_predictions
 USERNAME=wmchapman@mta.ca
 PASSWORD=Hygrometer16!
 
