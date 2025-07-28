@@ -39,8 +39,12 @@ jobs:
             any::rnaturalearthdata
             any::sf
       - name: Run run.sh
+        env:
+          USERNAME: ${{ secrets.COPERN_USER }}
+          PASSWORD: ${{ secrets.COPERN_PWD }}
+        run: sh ./run.sh
+      - name Push crongenerated changes
         run: |
-          sh ./run.sh
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
