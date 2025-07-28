@@ -3,13 +3,12 @@
 name: Run Vp Predictions
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/5 * * * *"  # Runs every 5 minutes for testing
 
 jobs:
-  report:
+  test-cron:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Updates Vp prediction images
-        run: sh run.sh
+      - run: echo "Cron job ran successfully!"
