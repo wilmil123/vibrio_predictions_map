@@ -341,6 +341,6 @@ window.onload = function () {
   document.getElementById("infobtn").click();
 };
 
-window.parent.postMessage({ type: 'setHeight', height: document.body.scrollHeight }, '*');
+function resizeIframe(obj) { obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px'; }
 		</script>
 </html>
