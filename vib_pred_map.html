@@ -340,5 +340,7 @@ window.onclick = function(event) {
 window.onload = function () {
   document.getElementById("infobtn").click();
 };
+
+window.parent.postMessage({ type: 'setHeight', height: document.body.scrollHeight }, '*');
 		</script>
 </html>
