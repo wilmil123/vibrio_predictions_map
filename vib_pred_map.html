@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="robots" content="noindex">
+		<base target="_blank">
 		<title>Vibrio Predicitons Map</title>
 <style type="text/css">
 body {
@@ -157,7 +158,11 @@ button:hover {
     font-weight: bold;
   }
   .btn {
-    font-size: 10pt;
+    font-size: 10px;
+  }
+  .btn:active {
+    background-color: rgba(240, 240, 240, 0.26);
+    color: #000000;
   }
 }
 </style>
@@ -168,22 +173,25 @@ button:hover {
     <div class="modal-content">
       <span class="close">&times;</span>
       <h3>Vp Prediction Tool Information</h3>
-      <p><b>These predictions are purely theoretical. Predictions of Vp outbreaks made by this tool are not guaranteed to happen in reality. The authors do not assume responsibility for any predictive errors made by this tool.</b></p>
+      <p><b>Model predictions are forecasts that help to determine risk. Predictions of Vp outbreaks may NOT occur. The authors do not assume responsibility for any predictive errors made by this tool or decisions its users make.</b></p>
       <hr>
       <h4>What is Vp?</h4>
-      <p>Vp, or <i>Vibrio parahaemolyticus</i>, is a marine bacterium that can cause foodborne illness from raw or undercooked seafood. It is not harmful to oysters, but can be a public health concern.<br><a href="https://inspection.canada.ca/en/preventive-controls/fish/vibrio-parahaemolyticus">Learn more from Health Canada</a> &middot; <a href="https://www.ecablab.com/lab-news/atlantic-oysters-in-a-warming-world">Learn more about modelling work on Vp done in the ECAB Lab</a> &middot; <a href="https://www.ecablab.com/lab-news/managing-a-current-threat-to-the-oyster-industry">Learn more about current Vp policies</a>.</p>
+      <p>Vp, or <i>Vibrio parahaemolyticus</i>, is a marine bacterium that can cause foodborne illness from raw or undercooked seafood. It can be a public health concern.<br><a href="https://inspection.canada.ca/en/preventive-controls/fish/vibrio-parahaemolyticus">Learn more from Health Canada</a> &middot; <a href="https://www.ecablab.com/lab-news/atlantic-oysters-in-a-warming-world">Learn more about modelling work on Vp done in the ECAB Lab</a> &middot; <a href="https://www.ecablab.com/lab-news/managing-a-current-threat-to-the-oyster-industry">Learn more about current Vp policies</a>.</p>
       <hr>
       <h4>Should I be worried?</h4>
-      <p><b>Probably not.</b> Vp infection from the Gulf of St. Lawrence is <a href="https://www.canada.ca/en/public-health/services/publications/food-nutrition/national-enteric-surveillance-program-annual-summary-2022.html#t2">very rare</a>. However, Vp can be a financial concern for oyster growers, so it is important to understand when and where outbreaks might occur in the Gulf of St. Lawrence.</p>
+      <p><b>Probably not.</b> Vp infection from the Gulf of St. Lawrence is <a href="https://www.canada.ca/en/public-health/services/publications/food-nutrition/national-enteric-surveillance-program-annual-summary-2022.html#t2">rare</a>. However, Vp can be a financial concern for oyster growers, so it is important to understand when and where outbreaks might occur.</p>
       <hr>
       <h4>What is a Vp outbreak?</h4>
       <p>A Vp 'outbreak' is considered as any bacteriological test returning a Vp abundance <b>above 100</b> colony-forming units per millilitre (CFU/mL) or most probable number per gram (MPN/g) of oyster meat.<br><a href="https://inspection.canada.ca/en/food-safety-industry/food-safety-standards-guidelines/bacteriological-guidelines">Learn more about Canadian Food Inspection Agency guidelines</a>.</p>
       <hr>
+      <h4>Who is this tool designed for?</h4>
+      <p><b>Oyster growers</b> may find this useful to inform on forecasted Vp outbreak risk over a 7-day period given current marine conditions. This tool is not designed to predict risk to the public when consuming oysters.</p>
+      <hr>
       <h4>How are the predictions made?</h4>
-      <p>Vp outbreak risk predictions are made using random forest (RF) models built on Canadian Food Inspection Agency archival test data from 2017-2023 and associations with water temperature and salinity. These RF models have out-of-bag error rates between 11% and 14%, increasing as predictions are made further into the future. The predictions shown here are made using environmental data from the <a href="https://marine.copernicus.eu/">Copernicus Marine Service</a>.<br>For more information, see this honours thesis.</p>
+      <p>Predictions of Vp outbreak risk are made using random forest models built on Canadian Food Inspection Agency archival test data from 2017-2023 and associations with water temperature and salinity. These RF models have misclassificaiton (out-of-bag) error rates between 11% and 14%, increasing as predictions are made further into the future. The predictions shown here are made using environmental data from the <a href="https://marine.copernicus.eu/">Copernicus Marine Service</a>.</p>
       <hr>
       <h4>Credits</h4>
-      <p>W. Chapman, <a href="https://www.ecablab.com/">ECAB Lab @ MtA</a></p>
+      <p>W. Chapman, <a href="https://www.ecablab.com/">ECAB Lab @ MtA</a>.</p>
     </div>
   </div>
 	  <div class="title">
