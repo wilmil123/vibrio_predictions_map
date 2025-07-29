@@ -35,9 +35,30 @@ body {
 .modelerror #modelerrortext {
   margin: 2px;
 }
+.contents-wrapper {
+  display: flex;
+}
+.main-contents {
+  flex: 10;
+}
 .slide-holder {
   margin: auto;
   grid-row: 3;
+}
+.language-switcher {
+  position: relative;
+  top: 40%;
+  max-width: 10%;
+  height: 20vh;
+  z-index: 1;
+  flex: 1;
+  float: right;
+}
+.button_lang {
+  margin: 10px;
+  padding: 0.25em 0em;
+  width: 3em;
+  height: 5em;
 }
 .wrap {
   width: 100%;
@@ -63,7 +84,10 @@ body {
   width: 50%;
 }
 .btn:active,
-.btn:hover {
+.btn:hover,
+.button_lang:active,
+.button_lang:hover,
+.current_lang {
   background-color: rgba(240, 240, 240, 0.26);
   color: #7A7A7A;
 }
@@ -172,28 +196,12 @@ button:hover {
   <div id="infoModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h3>Vp Prediction Tool Information</h3>
-      <p><b>Model predictions are forecasts that help to determine risk. Predictions of Vp outbreaks may NOT occur. The authors do not assume responsibility for any predictive errors made by this tool or decisions its users make.</b></p>
-      <hr>
-      <h4>What is Vp?</h4>
-      <p>Vp, or <i>Vibrio parahaemolyticus</i>, is a marine bacterium that can cause foodborne illness from raw or undercooked seafood. It can be a public health concern.<br><a href="https://inspection.canada.ca/en/preventive-controls/fish/vibrio-parahaemolyticus">Learn more from Health Canada</a> &middot; <a href="https://www.ecablab.com/lab-news/atlantic-oysters-in-a-warming-world">Learn more about modelling work on Vp done in the ECAB Lab</a> &middot; <a href="https://www.ecablab.com/lab-news/managing-a-current-threat-to-the-oyster-industry">Learn more about current Vp policies</a>.</p>
-      <hr>
-      <h4>Should I be worried?</h4>
-      <p><b>Probably not.</b> Vp infection from the Gulf of St. Lawrence is <a href="https://www.canada.ca/en/public-health/services/publications/food-nutrition/national-enteric-surveillance-program-annual-summary-2022.html#t2">rare</a>. However, Vp can be a financial concern for oyster growers, so it is important to understand when and where outbreaks might occur.</p>
-      <hr>
-      <h4>What is a Vp outbreak?</h4>
-      <p>A Vp 'outbreak' is considered as any bacteriological test returning a Vp abundance <b>above 100</b> colony-forming units per millilitre (CFU/mL) or most probable number per gram (MPN/g) of oyster meat.<br><a href="https://inspection.canada.ca/en/food-safety-industry/food-safety-standards-guidelines/bacteriological-guidelines">Learn more about Canadian Food Inspection Agency guidelines</a>.</p>
-      <hr>
-      <h4>Who is this tool designed for?</h4>
-      <p><b>Oyster growers</b> may find this useful to inform on forecasted Vp outbreak risk over a 7-day period given current marine conditions. This tool is not designed to predict risk to the public when consuming oysters.</p>
-      <hr>
-      <h4>How are the predictions made?</h4>
-      <p>Predictions of Vp outbreak risk are made using random forest models built on Canadian Food Inspection Agency archival test data from 2017-2023 and associations with water temperature and salinity. These RF models have misclassificaiton (out-of-bag) error rates between 11% and 14%, increasing as predictions are made further into the future. The predictions shown here are made using environmental data from the <a href="https://marine.copernicus.eu/">Copernicus Marine Service</a>.</p>
-      <hr>
-      <h4>Credits</h4>
-      <p>W. Chapman, <a href="https://www.ecablab.com/">ECAB Lab @ MtA</a>.</p>
+      <div id="modal-content-inner">
+      </div>
     </div>
   </div>
+  <span class="contents-wrapper">
+  <div class="main-contents">
 	  <div class="title">
 	    <p id="display-title"></p>
 	    <button id="infobtn" class="btn"><p id="infobtntext">&#9432;</p></button>
@@ -208,6 +216,15 @@ button:hover {
         <button id="btn2" class="btn"><h1 id="nextbtn"></h1></button>
       </div>
     </div>
+  </div>
+    <div class="language-switcher">
+      <table class="language-tab">
+        <tr class="tdlang"><button id="en" class="btn button_lang current_lang">EN</button></tr>
+        <tr class="tdlang"><button id="fr" class="btn button_lang">FR</button></tr>
+        <tr class="tdlang"><button id="mk" class="btn button_lang">MK</button></tr>
+      </table>
+    </div>
+  </span>
 
 <script>
 // today's date
@@ -232,10 +249,90 @@ var offsetDateStrs = createDateStrings(currentDate);
 
 const filepath = "./raster_predictions/";
 
-const titleHeaderStatic = "Vp in Gulf of St. Lawrence oysters<br>Outbreak prediction (% chance) for ";
-const modelErrStatic = "-day model out-of-bag classification error: ";
-const prevBtnStatic = "Previous Date";
-const nextBtnStatic = "Next Date";
+// EN
+const titleHeaderStaticEN = "Vp in Gulf of St. Lawrence oysters<br>Outbreak prediction (% chance) for ";
+const modelErrStaticEN = "-day model out-of-bag classification error: ";
+const prevBtnStaticEN = "Previous Date";
+const nextBtnStaticEN = "Next Date";
+const modalContentEN = `
+<h3>Vp Prediction Tool Information</h3>
+      <p><b>Model predictions are forecasts that help to determine risk. Predictions of Vp outbreaks may NOT occur. The authors do not assume responsibility for any predictive errors made by this tool or decisions its users make.</b></p>
+      <hr>
+      <h4>What is Vp?</h4>
+      <p>Vp, or <i>Vibrio parahaemolyticus</i>, is a marine bacterium that can cause foodborne illness from raw or undercooked seafood. It can be a public health concern.<br><a href="https://inspection.canada.ca/en/preventive-controls/fish/vibrio-parahaemolyticus">Learn more from Health Canada</a> &middot; <a href="https://www.ecablab.com/lab-news/atlantic-oysters-in-a-warming-world">Learn more about modelling work on Vp done in the ECAB Lab</a> &middot; <a href="https://www.ecablab.com/lab-news/managing-a-current-threat-to-the-oyster-industry">Learn more about current Vp policies</a>.</p>
+      <hr>
+      <h4>Should I be worried?</h4>
+      <p><b>Probably not.</b> Vp infection from the Gulf of St. Lawrence is <a href="https://www.canada.ca/en/public-health/services/publications/food-nutrition/national-enteric-surveillance-program-annual-summary-2022.html#t2">rare</a>. However, Vp can be a financial concern for oyster growers, so it is important to understand when and where outbreaks might occur.</p>
+      <hr>
+      <h4>What is a Vp outbreak?</h4>
+      <p>A Vp 'outbreak' is considered as any bacteriological test returning a Vp abundance <b>above 100</b> colony-forming units per millilitre (CFU/mL) or most probable number per gram (MPN/g) of oyster meat.<br><a href="https://inspection.canada.ca/en/food-safety-industry/food-safety-standards-guidelines/bacteriological-guidelines">Learn more about Canadian Food Inspection Agency guidelines</a>.</p>
+      <hr>
+      <h4>Who is this tool designed for?</h4>
+      <p><b>Oyster growers</b> may find this useful to inform on forecasted Vp outbreak risk over a 7-day period given current marine conditions. This tool is not designed to predict risk to the public when consuming oysters.</p>
+      <hr>
+      <h4>How are the predictions made?</h4>
+      <p>Predictions of Vp outbreak risk are made using random forest models built on Canadian Food Inspection Agency archival test data from 2017-2023 and associations with water temperature and salinity. These models have misclassificaiton (out-of-bag) error rates between 11% and 14%, increasing as predictions are made further into the future. The predictions shown here are made using environmental data from the <a href="https://marine.copernicus.eu/">Copernicus Marine Service</a>.</p>
+      <hr>
+      <h4>Credits</h4>
+      <p>W. Chapman, <a href="https://www.ecablab.com/">ECAB Lab @ MtA</a>.</p>
+      `;
+
+// FR
+const titleHeaderStaticFR = "Vp en huîtres du Golfe du Saint-Laurent<br>Prédiction de flambée (% de risque) pour ";
+const modelErrStaticFR = "Taux d'erreurs de classification hors-du-sac du modèle à ";
+const prevBtnStaticFR = "Date prédedente";
+const nextBtnStaticFR = "Prochaine date";
+const modalContentFR = `
+<h3>Informations sur l'outil de prédiction du Vp</h3>
+      <p><b>Les prédictions des modèles sont des prévisions qui peuvent aider à déterminer les risques posés par le Vp. Les prédictions des flambées du Vp NE doivent PAS en fait se produire. Les auteurs n'assumeront pas de la responsabilité ni pour des erreurs produits par cet outil ni pour les décisions que les utilisateurs en prennent.</b></p>
+      <hr>
+      <h4>Qu'est-ce que le Vp ?</h4>
+      <p>Vp, abréviation pour <i>Vibrio parahaemolyticus</i>, est une bactérie marine qui peut provoquer des maladies d'origine alimentaire provenant des fruits de mer crus ou insuffisament cuits. Il peut être une préoccupation pour la santé publique.<br><a href="https://inspection.canada.ca/fr/controles-preventifs/poisson/vibrio-parahaemolyticus">En savoir plus de Santé Canada</a> &middot; <a href="https://www.ecablab.com/lab-news/atlantic-oysters-in-a-warming-world">En savoir plus sur les efforts de modélisation du Vp dans l'ECAB Lab</a> &middot; <a href="https://www.ecablab.com/lab-news/managing-a-current-threat-to-the-oyster-industry">En savoir plus sur les politiques actuelles par rapport au Vp</a>.</p>
+      <hr>
+      <h4>Devrais-je m'inquiéter ?</h4>
+      <p><b>Probablement pas.</b> Des infections provenant du Vp dans le Golfe du Saint-Laurent sont <a href="https://www.canada.ca/en/public-health/services/publications/food-nutrition/national-enteric-surveillance-program-annual-summary-2022.html#t2">rares</a>. Le Vp peut cependant être une préoccupation financière pour les ostréiculteurs. Il est donc important de comprendre quand et où les flambées pourraient avoir lieu.</p>
+      <hr>
+      <h4>Qu'est-ce qu'on considère une flambée de Vp ?</h4>
+      <p>On considère une « flambee » de Vp comme un test bactériologique démontrant une abondance de Vp <b>supérieure à 100</b> cellules souches unipotentes par millilitre (CSU/mL) ou nombre le plus probable par gramme (NPP/g) dans le sot-l'y-laisse.<br><a href="https://inspection.canada.ca/fr/salubrite-alimentaire-lindustrie/normes-lignes-directrices-matiere-salubri/lignes-directrices-bacteriologiques">En savoir plus sur les lignes directrices de l'Agence canadienne d'inspection des aliments</a>.</p>
+      <hr>
+      <h4>À qui cet outil est-il destiné ?</h4>
+      <p><b>Les ostréiculteurs</b> peuvent trouver cet outil utile pour les informer du risque des flambées du Vp prévu sur une période de 7 jours. Cet outil n'est pas conçu pour prédire le risque pour le public en consommant des huîtres.</p>
+      <hr>
+      <h4>Comment les prédictions sont-elles faites ?</h4>
+      <p>Les prédictions de risque de flambées de Vp sont faites avec des modèles de forêt aléatoire construits avec des données bactériologiques de 2017 à 2023 provenant de l'Agence canadienne d'inspection des aliments et leurs associations avec la température et la salinité de l'eau. Ces modèles ont des taux d'erreurs de classificaiton (hors-du-sac) entre 11 et 14 %, ce qui accroît à mésure que les prédictions sont faites pour de plus en plus loin dans le futur. Les prédictions montrées ici sont faites avec des données venant du <a href="https://marine.copernicus.eu/fr">Service marin de Copernicus</a>.</p>
+      <hr>
+      <h4>Crédits</h4>
+      <p>W. Chapman, <a href="https://www.ecablab.com/">ECAB Lab @ MtA</a>.</p>
+      `;
+
+// MK
+const titleHeaderStaticMK = "Vp nmtmu'kiktuk Kji-Paqtapekitk<br>Ta'n tel-kisi-wessam-pukweltew (%) ";
+const modelErrStaticMK = " o'pl-kijjek wetmo'taqan ukjit ";
+const prevBtnStaticMK = "Uktejkewey na'kwek";
+const nextBtnStaticMK = "Na'kwek wejku'aq";
+const modalContentMK = `
+<h3>Kina'masuti ukjit ula wetmo'taqan</h3>
+      <p><b>Ta'n tel-tluek ula wetmo'taqan etukjel kis-ewe'ketoq nuji-nikwena'tiji nmtmu'k. Ta'n tel-tluek ula wetmo'taqan etukjel MA' tliaqtnuk. Ninen kisituek ula wetmo'taqan mu nujo'tmuek ta'n tujiw o'pl-kijjek wetmo'taqan kisna ta'n tel-tlita'jik mimajuinu'k ewe'ketu'tij ula wetmo'taqan.</b></p>
+      <hr>
+      <h4>Koqoey nɨt Vp ?</h4>
+      <p>Vp, kisna <i>Vibrio parahaemolyticus</i>, na mimajikewe'ji'j wessami-apje'ji'jit mu nemiamɨk. Wikit kta'niktuk. Kesnukwa’laji Vp mimajuinu’ ta’n eskɨpa’tiji nmtmu’k, kisna
+ta’n malqoma’tiji nmtmu’k ta’nik a’qatoqsiliji. Na sespete’lma'titl mimajuinu’k Vp-al.<br><a href="https://inspection.canada.ca/en/preventive-controls/fish/vibrio-parahaemolyticus">Me' ketu'-kekina'muit Health Canada</a> &middot; <a href="https://www.ecablab.com/lab-news/atlantic-oysters-in-a-warming-world">Me' ketu'-kina'masi ta'n tel-kisita'sik ula wetmo'taqan ECAB Lab-iktuk</a> &middot; <a href="https://www.ecablab.com/lab-news/managing-a-current-threat-to-the-oyster-industry">Me' ketu'-kina'masi ta'n tel-nenaqw Vp</a>.</p>
+      <hr>
+      <h4>Amujpa sespete'lm⁨ɨk?</h4>
+      <p><b>Moqwa'.</b><a href="https://www.canada.ca/en/public-health/services/publications/food-nutrition/national-enteric-surveillance-program-annual-summary-2022.html#t2">Sipeliw</a> kesnukwa'laji Vp mimajuinu' Kji-Paqtapekitk. Katu sespete'lma'titl nuji-nikwena'tiji Vp-al mɨta entu'tij nuji-nikwena'tiji suliewey. Toqo na espe'k ta'n nestmu'timk ta'n aqq tami wessam-pukweltew Vp.</p>
+      <hr>
+      <h4>Ta'sit Vp na wessam-pukwelk?</h4>
+      <p>Telua'tiek wessam-pukwelk Vp ta'n tujiw me' aqq 100 "colony forming units per millilitre (CFU/mL)" kisna "most probable number per gram (MPN/g)" Vp eyk nmtmu'kiktuk.<br><a href="https://inspection.canada.ca/en/food-safety-industry/food-safety-standards-guidelines/bacteriological-guidelines">Me' ketu-kekina'muit Canadian Food Inspection Agency</a>.</p>
+      <hr>
+      <h4>Wen weli-kisi-weketoq ula wetmo'taqan?</h4>
+      <p><b>Nuji-nikwena'tiji nmtmu'k</b> weli-kisi-weketu'tij ula wetmo'taqan mɨta aknutmuinami ta'n tel-wessam-pukweltew Vp nmtmu'kiktuk Kji-Paqtapekitk aqantie'uti wejku'aq. Katu mu aknutmut ta'n mu nsanoqoniktnuk eskɨpalut nmtmu'k.</p>
+      <hr>
+      <h4>Tal-lukwek ula wetmo'taqan?</h4>
+      <p>Wetmo'taqan ewe'ketoq "random forest models" ta'nn kisituekl. Ewe'ketuekl enkaqann enkatkl Canadian Food Inspection Agency, 2017ek we'kaw 2023ek. Elk ewe'ketuekl ta'n tel-pmpɨtek samwqan aqq ta'n tel-salawe'k samqwan. Wetmo'taqan o'pl-kijjek "out-of-bag"-iw ta'n tel-wessam-pukwelk Vp samqwaniktuk etuiw 11% aqq 14%. Me' o'pl-kijjek ta'n tujiw me' nikanapik. Ta'n tel-pmpɨtek samqwan aqq ta'n tel-salawe'k samqwan ukjit ula wetmo'taqan wejita'ql <a href="https://marine.copernicus.eu/">Copernicus Marine Service</a>.</p>
+      <hr>
+      <h4>Eltu'tipnik</h4>
+      <p>W. Chapman, <a href="https://www.ecablab.com/">ECAB Lab @ MtA</a>.</p>
+      `;
 
 		//array of photos
 const photos = [
@@ -262,29 +359,69 @@ let slide = document.getElementById("slide");
 const btn1 = document.getElementById("btn1");
 const btn2 = document.getElementById("btn2");
 
+const english = document.getElementById("en"),
+      french = document.getElementById("fr"),
+      mikmaw = document.getElementById("mk");
+
+var currentLang = "EN";
+
 //set current index
 let i = 0;
-updateDynamicElements(i);
+updateText(english, french, mikmaw);
 
 function updateDynamicElements (currentIndex) {
   //set slide src to current index
   slide.src = photos[currentIndex];
   // set title & buttons to current index
-  document.getElementById("display-title").innerHTML = titleHeaderStatic + "<b>" + offsetDateStrs[currentIndex] + "</b>";
-  document.getElementById("modelerrortext").innerHTML = (currentIndex + 1) + modelErrStatic + "<b>" + modelErrors[currentIndex] + "</b>";
+  if (currentLang == "EN") {
+    document.getElementById("display-title").innerHTML = titleHeaderStaticEN + "<b>" + offsetDateStrs[currentIndex] + "</b>";
+    document.getElementById("modelerrortext").innerHTML = (currentIndex + 1) + modelErrStaticEN + "<b>" + modelErrors[currentIndex] + "</b>";
+  }
+  else if (currentLang == "FR") {
+    document.getElementById("display-title").innerHTML = titleHeaderStaticFR + "<b>" + offsetDateStrs[currentIndex] + "</b>";
+    if ((currentIndex + 1) == 1) {
+      document.getElementById("modelerrortext").innerHTML = modelErrStaticFR + (currentIndex + 1) + " jour: " + "<b>" + modelErrors[currentIndex] + "</b>";
+    } else {
+      document.getElementById("modelerrortext").innerHTML = modelErrStaticFR + (currentIndex + 1) + " jours: " + "<b>" + modelErrors[currentIndex] + "</b>";
+    }
+  }
+  else if (currentLang == "MK") {
+    document.getElementById("display-title").innerHTML = titleHeaderStaticMK + "<b>" + offsetDateStrs[currentIndex] + "</b>";
+    if ((currentIndex + 1) == 1) {
+      document.getElementById("modelerrortext").innerHTML = "<b>" + modelErrors[currentIndex] + "</b>" + modelErrStaticMK + (currentIndex + 1) + " na'kwek";
+    } else {
+      document.getElementById("modelerrortext").innerHTML = "<b>" + modelErrors[currentIndex] + "</b>" + modelErrStaticMK + (currentIndex + 1) + " na'kwekl";
+    }
+  }
   if ((currentIndex - 1) < 0) {
     btn1.disabled = true;
     document.getElementById("prevbtn").innerHTML = "";
   } else {
     btn1.disabled = false;
-    document.getElementById("prevbtn").innerHTML = prevBtnStatic + "<br>" + offsetDateStrs[currentIndex - 1];
+    if (currentLang == "EN") {
+      document.getElementById("prevbtn").innerHTML = prevBtnStaticEN + "<br>" + offsetDateStrs[currentIndex - 1];
+    }
+    else if (currentLang == "FR") {
+      document.getElementById("prevbtn").innerHTML = prevBtnStaticFR + "<br>" + offsetDateStrs[currentIndex - 1];
+    }
+    else if (currentLang == "MK") {
+      document.getElementById("prevbtn").innerHTML = prevBtnStaticMK + "<br>" + offsetDateStrs[currentIndex - 1];
+    }
   }
   if ((currentIndex + 1) > (photos.length - 1)) {
     btn2.disabled = true;
     document.getElementById("nextbtn").innerHTML = "";
   } else {
     btn2.disabled = false;
-    document.getElementById("nextbtn").innerHTML = nextBtnStatic + "<br>" + offsetDateStrs[currentIndex + 1];
+    if (currentLang == "EN") {
+      document.getElementById("nextbtn").innerHTML = nextBtnStaticEN + "<br>" + offsetDateStrs[currentIndex + 1];
+    }
+    else if (currentLang == "FR") {
+      document.getElementById("nextbtn").innerHTML = nextBtnStaticFR + "<br>" + offsetDateStrs[currentIndex + 1];
+    }
+    else if (currentLang == "MK") {
+      document.getElementById("nextbtn").innerHTML = nextBtnStaticMK + "<br>" + offsetDateStrs[currentIndex + 1];
+    }
   }
 }
 
@@ -340,5 +477,45 @@ window.onclick = function(event) {
 window.onload = function () {
   document.getElementById("infobtn").click();
 };
+
+english.onclick = function() {
+    updateText(english, french, mikmaw);
+};
+// add an event listener to listen to when the user clicks on one of the language span tags
+// this triggers our custom "change" function, which we will define later
+
+french.onclick = function() {
+    updateText(french, english, mikmaw);
+};
+
+mikmaw.onclick = function() {
+    updateText(mikmaw, english, french);
+};
+
+function updateText(lang_on, lang_off1, lang_off2) {
+  if (!lang_on.classList.contains("current_lang")) {
+    // if the span that the user clicks on does not have the "current_lang" class
+    lang_on.classList.add("current_lang");
+    // add the "current_lang" class to it
+    lang_off1.classList.remove("current_lang");
+    lang_off2.classList.remove("current_lang");
+    // remove the "current_lang" class from the other span
+  }
+  if (lang_on.innerHTML == "EN") {
+    currentLang = "EN";
+    document.getElementById("modal-content-inner").innerHTML = modalContentEN;
+  }
+  
+  else if (lang_on.innerHTML == "FR") {
+    currentLang = "FR";
+    document.getElementById("modal-content-inner").innerHTML = infoBtnStaticFR;
+  }
+  
+  else if (lang_on.innerHTML == "MK") {
+    currentLang = "MK";
+    document.getElementById("modal-content-inner").innerHTML = infoBtnStaticMK;
+  }
+  updateDynamicElements(i);
+}
 		</script>
 </html>
