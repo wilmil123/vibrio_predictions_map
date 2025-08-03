@@ -5,7 +5,7 @@ name: Run Vp Predictions
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"  # Runs at midnight
+    - cron: "0 3 * * *"  # Runs at 3 AM UTC = 00:00 ADT
 
 jobs:
   run-vp-preds:
