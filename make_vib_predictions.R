@@ -67,11 +67,11 @@ print("Successfully offset datetime strings.")
 
 # load rasters
 temperature_raster <- rast(sprintf("%s/temperature_%s.nc", parsed_args$raster_dir, yesterday_date)) %>%
-  project("EPSG:4326") %>% 
-  terra::aggregate(fact = 3, fun = mean)
+  project("EPSG:4326") # %>% 
+  # terra::aggregate(fact = 3, fun = mean)
 salinity_raster <- rast(sprintf("%s/salinity_%s.nc", parsed_args$raster_dir, yesterday_date)) %>% 
-  project("EPSG:4326") %>% 
-  terra::aggregate(fact = 3, fun = mean)
+  project("EPSG:4326") # %>% 
+  # terra::aggregate(fact = 3, fun = mean)
 
 print("Successfully loaded environmental rasters from file.")
 
