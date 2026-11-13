@@ -13,13 +13,13 @@ setenv VIRTUAL_ENV /home/runner/work/vibrio_predictions_map/vibrio_predictions_m
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/"bin":$PATH"
+setenv VIRTUAL_ENV_PROMPT vib_pred_map
 
 
 set _OLD_VIRTUAL_PROMPT="$prompt"
 
 if (! "$?VIRTUAL_ENV_DISABLE_PROMPT") then
-    set prompt = '(vib_pred_map) '"$prompt"
-    setenv VIRTUAL_ENV_PROMPT '(vib_pred_map) '
+    set prompt = "("vib_pred_map") $prompt:q"
 endif
 
 alias pydoc python -m pydoc
